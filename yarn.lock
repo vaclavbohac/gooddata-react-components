@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@gooddata/data-layer@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@gooddata/data-layer/-/data-layer-4.0.2.tgz#048825e55233629cc04ef0df408790cf5dd170d2"
+"@gooddata/data-layer@4.0.2-vojty-new-afm-2017-10-31T11-27-06-831Z":
+  version "4.0.2-vojty-new-afm-2017-10-31T11-27-06-831Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/data-layer/-/data-layer-4.0.2-vojty-new-afm-2017-10-31T11-27-06-831Z.tgz#9cd924c982a3b0063ba9aaa5a3b9608da1454f45"
   dependencies:
     json-stable-stringify "1.0.1"
     lodash "4.17.4"
@@ -43,6 +43,7 @@
     "@gooddata/goodstrap" "53.0.1"
     "@gooddata/js-utils" "0.7.1"
     "@gooddata/numberjs" "3.0.0"
+    "@gooddata/typings" "0.0.1-vaclavbohac-init-2017-10-06T12-12-51-885Z"
     classnames "2.2.5"
     fixed-data-table-2 "0.7.13"
     highcharts "4.2.5"
@@ -70,19 +71,29 @@
     moment "2.17.1"
     moment-timezone "0.5.11"
 
-"@gooddata/mock-js@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@gooddata/mock-js/-/mock-js-0.1.0.tgz#485284b2380902791c07f680b6809261dc04b0c5"
+"@gooddata/mock-js@0.1.0-vaclavbohac-transform-api-2017-10-31T15-58-18-296Z":
+  version "0.1.0-vaclavbohac-transform-api-2017-10-31T15-58-18-296Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/mock-js/-/mock-js-0.1.0-vaclavbohac-transform-api-2017-10-31T15-58-18-296Z.tgz#f329d11ffaef97ef7a2ed2ea29e098c1629a00b1"
   dependencies:
+    "@gooddata/typings" "0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z"
     body-parser "1.17.1"
     es6-promise "4.1.0"
     express "4.15.2"
     express-session "1.15.2"
+    invariant "2.2.2"
     lodash "4.17.4"
 
 "@gooddata/numberjs@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@gooddata/numberjs/-/numberjs-3.0.0.tgz#9d646f1f9c05614d18e08ac5024b2ba2f7139396"
+
+"@gooddata/typings@0.0.1-vaclavbohac-init-2017-10-06T12-12-51-885Z":
+  version "0.0.1-vaclavbohac-init-2017-10-06T12-12-51-885Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/typings/-/typings-0.0.1-vaclavbohac-init-2017-10-06T12-12-51-885Z.tgz#4814f70329d4c8bf7ff3471f9fb373cbb2b0bc01"
+
+"@gooddata/typings@0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z":
+  version "0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/typings/-/typings-0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z.tgz#9ab7313b4cadb21fd741f1e8e8e9105fb4f09c0d"
 
 "@hypnosphi/fuse.js@^3.0.9":
   version "3.0.9"
@@ -3315,7 +3326,7 @@ hawk@~6.0.2:
     sntp "2.x.x"
 
 highcharts@4.2.5:
-  version v4.2.5
+  version "4.2.5"
   resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-4.2.5.tgz#f18bbda5ca326fdff7d816c94814fe8509cec969"
 
 hmac-drbg@^1.0.0:

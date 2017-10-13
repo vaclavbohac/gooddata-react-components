@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as numeral from 'numeral';
 import get = require('lodash/get');
 import noop = require('lodash/noop');
-import { Afm, Filters } from '@gooddata/data-layer';
+import { AFM, Execution } from '@gooddata/typings';
+import { Filters, Uri } from '@gooddata/data-layer';
 
 import { Execute } from '../../execution/Execute';
 import { IEvents } from '../../interfaces/Events';
@@ -10,30 +11,34 @@ import { KpiPropTypes, Requireable } from '../../proptypes/Kpi';
 
 export { Requireable };
 
-export type URIString = string;
-
 export interface IKpiProps extends IEvents {
-    measure: URIString;
+    measure: string;
     projectId: string;
-    filters?: Afm.IFilter[];
+    filters?: AFM.FilterItem[];
     format?: string;
 }
 
-function buildAFM(measureUri: string, filters: Afm.IFilter[] = []): Afm.IAfm {
-    return {
+function buildAFM(measure: string, filters: AFM.FilterItem[] = []): AFM.IAfm {
+    const item = Uri.isUri(measure) ? {
+        uri: measure
+    } : {
+        identifier: measure
+    };
+
+    const afm: AFM.IAfm = {
         measures: [
             {
-                id: 'm1',
+                localIdentifier: 'm1',
                 definition: {
-                    baseObject: {
-                        id: measureUri
+                    measure: {
+                        item
                     }
                 }
             }
         ],
-
         filters: filters.filter(Filters.isNotEmptyFilter)
     };
+    return afm;
 }
 
 const defaultErrorHandler = (error: Object) => {
@@ -50,10 +55,6 @@ export class Kpi extends React.Component<IKpiProps, null> {
 
     public static propTypes = KpiPropTypes;
 
-    public getFormattedResult(result: any): string {
-        return numeral(result).format(this.props.format);
-    }
-
     public render() {
         const afm = buildAFM(this.props.measure, this.props.filters);
 
@@ -64,11 +65,23 @@ export class Kpi extends React.Component<IKpiProps, null> {
                 onError={this.props.onError}
                 onLoadingChanged={this.props.onLoadingChanged}
             >
-                {
-                    (result: any) =>
-                        <span className="gdc-kpi">{this.getFormattedResult(get(result, 'result.rawData.0.0'))}</span>
+                {(result: Execution.IExecutionResponses) =>
+                    <span className="gdc-kpi">
+                        {this.getFormattedResult(
+                            this.extractNumber(result)
+                        )}
+                    </span>
                 }
             </Execute>
         );
+    }
+
+    private getFormattedResult(result: string): string {
+        return numeral(result).format(this.props.format);
+    }
+
+    private extractNumber(result: Execution.IExecutionResponses): string {
+        // TODO handle empty result
+        return get<string>(result, 'executionResult.executionResult.data.0.0');
     }
 }

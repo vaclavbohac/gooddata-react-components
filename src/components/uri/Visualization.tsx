@@ -3,7 +3,13 @@ import * as GoodData from 'gooddata';
 import noop = require('lodash/noop');
 import isEqual = require('lodash/isEqual');
 import identity = require('lodash/identity');
-import { Afm, DataSource, MetadataSource, UriMetadataSource, UriAdapter } from '@gooddata/data-layer';
+import {
+    AfmUtils,
+    ExecuteAfmAdapter,
+    VisualizationObject,
+    toAfmResultSpec
+} from '@gooddata/data-layer';
+import { AFM } from '@gooddata/typings';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
@@ -13,23 +19,16 @@ import { BaseChart, IChartConfig } from '../core/base/BaseChart';
 import { Table } from '../core/Table';
 import { IEvents } from '../../interfaces/Events';
 import { VisualizationPropType, Requireable } from '../../proptypes/Visualization';
-import { VisualizationTypes, ChartType } from '../../constants/visualizationTypes';
+import { VisualizationTypes, VisType } from '../../constants/visualizationTypes';
 import { IDrillableItem } from '../../interfaces/DrillEvents';
+import { IDataSource } from '../../interfaces/DataSource';
 
 export { Requireable };
 
-function isDateFilter(filter: Afm.IFilter): filter is Afm.IDateFilter {
-    return filter.type === 'date';
-}
-
-function isAttributeFilter(filter: Afm.IFilter): filter is Afm.IAttributeFilter {
-    return filter.type === 'attribute';
-}
-
 // BC with TS 2.3
-function getDateFilter(filters: Afm.IFilter[]): Afm.IDateFilter {
+function getDateFilter(filters: AFM.FilterItem[]): AFM.DateFilterItem {
     for (const filter of filters) {
-        if (isDateFilter(filter)) {
+        if (AfmUtils.isDateFilter(filter)) {
             return filter;
         }
     }
@@ -38,11 +37,11 @@ function getDateFilter(filters: Afm.IFilter[]): Afm.IDateFilter {
 }
 
 // BC with TS 2.3
-function getAttributeFilters(filters: Afm.IFilter[]): Afm.IAttributeFilter[] {
-    const attributeFilters: Afm.IAttributeFilter[] = [];
+function getAttributeFilters(filters: AFM.FilterItem[]): AFM.AttributeFilterItem[] {
+    const attributeFilters: AFM.AttributeFilterItem[] = [];
 
     for (const filter of filters) {
-        if (isAttributeFilter(filter)) {
+        if (AfmUtils.isAttributeFilter(filter)) {
             attributeFilters.push(filter);
         }
     }
@@ -58,19 +57,21 @@ export interface IVisualizationProps extends IEvents {
     identifier?: string;
     locale?: string;
     config?: IChartConfig;
-    filters?: Afm.IFilter[];
+    filters?: AFM.FilterItem[];
     drillableItems?: IDrillableItem[];
     uriResolver?: (projectId: string, uri?: string, identifier?: string) => Promise<string>;
 }
 
-export interface IVisualizationExecInfo {
-    type: string;
-    dataSource: DataSource.IDataSource<GoodData.ISimpleExecutorResult>;
-    metadataSource: MetadataSource.IMetadataSource;
-}
-
 export interface IVisualizationState {
     isLoading: boolean;
+    resultSpec: AFM.IResultSpec;
+    type: VisType;
+}
+
+export interface IVisualizationExecInfo {
+    dataSource: IDataSource;
+    resultSpec: AFM.IResultSpec;
+    type: VisType;
 }
 
 function uriResolver(projectId: string, uri?: string, identifier?: string): Promise<string> {
@@ -95,10 +96,8 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
     };
 
     private visualizationUri: string;
-    private type: string;
-    private uriAdapter: UriAdapter;
-    private metadataSource: MetadataSource.IMetadataSource;
-    private dataSource: DataSource.IDataSource<GoodData.ISimpleExecutorResult>;
+    private adapter: ExecuteAfmAdapter;
+    private dataSource: IDataSource;
 
     private subscription: Subscription;
     private subject: Subject<Promise<IVisualizationExecInfo>>;
@@ -107,7 +106,9 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
         super(props);
 
         this.state = {
-            isLoading: true
+            isLoading: true,
+            type: null,
+            resultSpec: null
         };
 
         this.visualizationUri = props.uri;
@@ -116,16 +117,15 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
 
         this.subject = new Subject();
         this.subscription = this.subject
-            // Unwraps values from promise and ensures that the latest result is returned
-            // Used to be called `flatMapLatest`
             .switchMap<Promise<IVisualizationExecInfo>, IVisualizationExecInfo>(identity)
-
             .subscribe(
-                ({ type, dataSource, metadataSource }) => {
-                    this.type = type;
+                ({ type, resultSpec, dataSource }) => {
                     this.dataSource = dataSource;
-                    this.metadataSource = metadataSource;
-                    this.setState({ isLoading: false });
+                    this.setState({
+                        type,
+                        resultSpec,
+                        isLoading: false
+                    });
                 },
                 () => errorHandler(ErrorStates.NOT_FOUND)
             );
@@ -134,14 +134,14 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
     public componentDidMount() {
         const { projectId, uri, identifier, filters } = this.props;
 
-        this.uriAdapter = new UriAdapter(GoodData, projectId);
+        this.adapter = new ExecuteAfmAdapter(GoodData, projectId);
         this.visualizationUri = uri;
 
-        this.prepareDataSources({
+        this.prepareDataSources(
             projectId,
             identifier,
             filters
-        });
+        );
     }
 
     public componentWillUnmount() {
@@ -164,23 +164,20 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
             this.setState({
                 isLoading: true
             });
-            const { projectId, identifier, filters } = nextProps;
-            const options = {
-                projectId,
-                identifier,
-                filters
-            };
             if (hasInvalidResolvedUri) {
                 this.visualizationUri = nextProps.uri;
-                this.metadataSource = null;
             }
-            this.prepareDataSources(options);
+            this.prepareDataSources(
+                nextProps.projectId,
+                nextProps.identifier,
+                nextProps.filters
+            );
         }
     }
 
     public render() {
-        const { dataSource, metadataSource, type } = this;
-        if (!dataSource || !metadataSource || !type) {
+        const { dataSource } = this;
+        if (!dataSource) {
             return null;
         }
 
@@ -192,13 +189,14 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
             locale,
             config
         } = this.props;
+        const { resultSpec, type } = this.state;
 
         switch (type) {
             case VisualizationTypes.TABLE:
                 return (
                     <Table
                         dataSource={dataSource}
-                        metadataSource={metadataSource}
+                        resultSpec={resultSpec}
                         drillableItems={drillableItems}
                         onFiredDrillEvent={onFiredDrillEvent}
                         onError={onError}
@@ -210,12 +208,12 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
                 return (
                     <BaseChart
                         dataSource={dataSource}
-                        metadataSource={metadataSource}
+                        resultSpec={resultSpec}
                         drillableItems={drillableItems}
                         onFiredDrillEvent={onFiredDrillEvent}
                         onError={onError}
                         onLoadingChanged={onLoadingChanged}
-                        type={type as ChartType}
+                        type={type}
                         locale={locale}
                         config={config}
                     />
@@ -224,28 +222,30 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
     }
 
     private prepareDataSources(
-        { projectId, identifier, filters = [] }: { projectId: string, identifier: string, filters: Afm.IFilter[] }
+        projectId: string,
+        identifier: string,
+        filters: AFM.FilterItem[] = []
     ) {
         const promise = this.props.uriResolver(projectId, this.visualizationUri, identifier)
-            .then((visualizationUri) => {
+            .then((visualizationUri: string) => {
                 this.visualizationUri = visualizationUri;
+                return GoodData.xhr.get<VisualizationObject.IVisualizationObjectResponse>(visualizationUri)
+                    .then(response => response.visualization);
+            })
+            .then((mdObject: VisualizationObject.IVisualizationObject) => {
+                const { afm, resultSpec } = toAfmResultSpec(mdObject.content);
                 const dateFilter = getDateFilter(filters);
                 const attributeFilters = getAttributeFilters(filters);
-                return this.uriAdapter.createDataSource({ uri: this.visualizationUri, attributeFilters, dateFilter })
-                    .then((dataSource) => {
-                        this.metadataSource = this.metadataSource || new UriMetadataSource(GoodData, visualizationUri);
-
-                        return this.metadataSource.getVisualizationMetadata()
-                            .then(({ metadata }) => {
-                                return {
-                                    type: metadata.content.type,
-                                    dataSource,
-                                    metadataSource: this.metadataSource
-                                };
-                            });
+                const afmWithFilters = AfmUtils.appendFilters(afm, attributeFilters, dateFilter);
+                return this.adapter.createDataSource(afmWithFilters)
+                    .then((dataSource: IDataSource) => {
+                        return {
+                            type: mdObject.content.type,
+                            dataSource,
+                            resultSpec
+                        };
                     });
-            });
-
+                });
         this.subject.next(promise);
     }
 }

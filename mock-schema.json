@@ -5,7 +5,7 @@
   },
   "groups": [
     {
-      "measures": [
+      "metrics": [
         {
           "identifier": "1",
           "title": "Amount"

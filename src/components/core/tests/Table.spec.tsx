@@ -1,29 +1,29 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 
-import {
-    VisualizationObject
-} from '@gooddata/data-layer';
-import { ISimpleExecutorResult } from 'gooddata';
 import { delay } from '../../tests/utils';
 
 import {
-    initTableDataLoading,
     TableTransformation,
     ResponsiveTable
 } from '../../tests/mocks';
-jest.mock('../../../helpers/load', () => ({
-    initTableDataLoading
-}));
+
+// Replace this with optional prop
 jest.mock('@gooddata/indigo-visualizations', () => ({
     TableTransformation,
     ResponsiveTable
 }));
 
+import { IDataSource } from '../../../interfaces/DataSource';
 import { Table, ITableProps } from '../Table';
 import { ErrorStates } from '../../../constants/errorStates';
-import { VisualizationTypes } from '../../../constants/visualizationTypes';
-import { getResultWithTwoMeasures } from '../../../execution/fixtures/SimpleExecutor.fixtures';
+import { emptyResponse } from '../../../execution/fixtures/ExecuteAfm.fixtures';
+
+const emptyResultDataSource: IDataSource = {
+    getData: () => Promise.resolve(emptyResponse),
+    getAfm: () => ({}),
+    getFingerprint: () => ('{}')
+};
 
 describe('Table', () => {
     const createComponent = (props: ITableProps) => {
@@ -31,70 +31,16 @@ describe('Table', () => {
     };
 
     const createProps = (customProps = {}): ITableProps => {
-        const metadataResult: VisualizationObject.IVisualizationMetadataResult = {
-            metadata: {
-                meta: {
-                    title: 'foo'
-                },
-                content: {
-                    type: VisualizationTypes.COLUMN as VisualizationObject.VisualizationType,
-                    buckets: {
-                        measures: [],
-                        categories: [],
-                        filters: []
-                    }
-                }
-            },
-            measuresMap: {}
-        };
         return {
             height: 200,
             environment: 'dashboards',
-            dataSource: {
-                getData: () => Promise.resolve({}),
-                getAfm: () => ({}),
-                getFingerprint: () => ('{}')
-            },
-            metadataSource: {
-                getVisualizationMetadata: () => Promise.resolve(metadataResult),
-                getFingerprint: () => '{}'
-            },
+            dataSource: emptyResultDataSource,
             ...customProps
         };
     };
 
-    beforeEach(() => {
-        initTableDataLoading.mockClear();
-    });
-
-    it('should call two times initDataLoading when fingerprint changes', () => {
-        const onError = jest.fn();
-        const props = createProps({
-            dataSource: {
-                getData: () => Promise.resolve({}),
-                getAfm: () => ({}),
-                getFingerprint: () => '{}'
-            }
-        });
-        const wrapper = createComponent(props);
-        wrapper.setProps({
-            dataSource: {
-                getData() {
-                    return Promise.resolve(getResultWithTwoMeasures());
-                },
-                getAfm: () => ({}),
-                getFingerprint: () => 'differentprint'
-            }
-        });
-
-        return delay().then(() => {
-            expect(wrapper.find(TableTransformation).length).toBe(1);
-            expect(initTableDataLoading).toHaveBeenCalledTimes(2);
-            expect(onError).toHaveBeenCalledTimes(0);
-        });
-    });
-
     it('should call initDataLoading when sorting changed', () => {
+        // TODO
         const props = createProps({
             transformation: {}
         });
@@ -108,13 +54,6 @@ describe('Table', () => {
 
         return delay().then(() => {
             expect(wrapper.find(TableTransformation).length).toBe(1);
-            expect(initTableDataLoading).toHaveBeenCalledTimes(2);
-            expect(initTableDataLoading).toHaveBeenCalledWith(
-                newProps.dataSource,
-                newProps.metadataSource,
-                newProps.transformation,
-                newProps.visualizationProperties.sorting
-            );
         });
     });
 
@@ -122,25 +61,16 @@ describe('Table', () => {
         const onError = jest.fn();
         const props = createProps({
             onError,
-            dataSource: {
-                getData: () => Promise.resolve({}),
-                getAfm: () => ({}),
-                getFingerprint: () => '{}'
-            }
+            dataSource: emptyResultDataSource
         });
         const wrapper = createComponent(props);
         wrapper.setProps({
-            dataSource: {
-                getData: () => Promise.resolve({}),
-                getAfm: () => ({}),
-                getFingerprint: () => '{}'
-            }
+            dataSource: emptyResultDataSource
         });
 
         return delay().then(() => {
             expect(wrapper.find('.gdc-indigo-responsive-table')).toBeDefined();
             expect(wrapper.find(TableTransformation).length).toBe(1);
-            expect(initTableDataLoading).toHaveBeenCalledTimes(1);
             expect(onError).toHaveBeenCalledTimes(1);
             expect(onError).toHaveBeenCalledWith({ status: ErrorStates.OK });
         });
@@ -158,7 +88,6 @@ describe('Table', () => {
             expect(wrapper.find('.gdc-indigo-responsive-table')).toBeDefined();
             expect(wrapper.find(TableTransformation).length).toBe(1);
             expect(wrapper.find(TableTransformation).prop('tableRenderer')).toBeDefined();
-            expect(initTableDataLoading).toHaveBeenCalledTimes(1);
             expect(onError).toHaveBeenCalledTimes(1);
             expect(onError).toHaveBeenCalledWith({ status: ErrorStates.OK });
         });
@@ -205,7 +134,6 @@ describe('Table', () => {
         const props = createProps({
             onError
         });
-        initTableDataLoading.mockImplementationOnce(() => Promise.reject(ErrorStates.DATA_TOO_LARGE_TO_COMPUTE));
         const wrapper = createComponent(props);
 
         return delay().then(() => {
@@ -223,17 +151,9 @@ describe('Table', () => {
         const props = createProps({
             pushData
         });
-        const resultMock: { result: ISimpleExecutorResult, sorting: Object, metadata: Object } = {
+        const resultMock: { result: any, sorting: Object, metadata: Object } = {
             result: {
                 isLoaded: true,
-                headers: [
-                    {
-                        type: 'attrLabel',
-                        id: 'label.csv_test.polozka',
-                        uri: '/gdc/md/x3k4294x4k00lrz5degxnc6nykynhh52/obj/75662',
-                        title: 'Polozka'
-                    }
-                ],
                 rawData: [
                     [
                         {
@@ -248,7 +168,6 @@ describe('Table', () => {
             sorting: {},
             metadata: {}
         };
-        initTableDataLoading.mockImplementationOnce(() => Promise.resolve(resultMock));
         createComponent(props);
 
         return delay().then(() => {
@@ -271,7 +190,7 @@ describe('Table', () => {
         createComponent(props);
 
         return delay().then(() => {
-            expect(loadingHandler).toHaveBeenCalled();
+            expect(loadingHandler).toHaveBeenCalledTimes(2);
         });
     });
 });

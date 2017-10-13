@@ -1,6 +1,5 @@
 import * as AfmComponents from './components/afm/afmComponents';
 import * as CoreComponents from './components/core/coreComponents';
-import * as promise from './helpers/promise';
 import * as VisEvents from './interfaces/Events';
 import CatalogHelper from './helpers/CatalogHelper';
 import { BaseChart } from './components/core/base/BaseChart';
@@ -27,7 +26,6 @@ export {
     IDrillableItem,
     IVisualizationProperties,
     Kpi,
-    promise,
     PropTypes,
     VisEvents,
     Visualization,

@@ -2,27 +2,32 @@ import * as React from 'react';
 import * as GoodData from 'gooddata';
 import get = require('lodash/get');
 import isEqual = require('lodash/isEqual');
-import { Afm, DataTable, SimpleExecutorAdapter, Transformation } from '@gooddata/data-layer';
+import { AFM, Execution } from '@gooddata/typings';
+import { DataTable, ExecuteAfmAdapter } from '@gooddata/data-layer';
 
 import { ErrorStates } from '../constants/errorStates';
 import { IEvents } from '../interfaces/Events';
 
-export type IDataTableFactory = (projectId: string) => DataTable<GoodData.ISimpleExecutorResult>;
+export type IDataTableFactory = (projectId: string) => DataTable<Execution.AfmExecutionResponse>;
 
 export interface IExecuteProps extends IEvents {
-    afm: Afm.IAfm;
-    transformation?: Transformation.ITransformation;
+    afm: AFM.IAfm;
+    resultSpec?: AFM.IResultSpec;
     projectId: string;
     children?: any;
     dataTableFactory?: IDataTableFactory; // only for tests
 }
 
 export interface IExecuteState {
-    result: GoodData.ISimpleExecutorResult;
+    result: Execution.AfmExecutionResponse;
 }
 
-function dataTableFactory(projectId: string): DataTable<GoodData.ISimpleExecutorResult> {
-    return new DataTable(new SimpleExecutorAdapter(GoodData, projectId));
+function dataTableFactory(projectId: string): DataTable<Execution.AfmExecutionResponse> {
+    return new DataTable(new ExecuteAfmAdapter(GoodData, projectId));
+}
+
+function isEmptyResult(response: Execution.AfmExecutionResponse): boolean {
+    return (response as Execution.IError).code === 204; // TODO use constant
 }
 
 export class Execute extends React.Component<IExecuteProps, IExecuteState> {
@@ -30,7 +35,7 @@ export class Execute extends React.Component<IExecuteProps, IExecuteState> {
         dataTableFactory
     };
 
-    private dataTable: DataTable<GoodData.ISimpleExecutorResult>;
+    private dataTable: DataTable<Execution.AfmExecutionResponse>;
 
     public constructor(props: IExecuteProps) {
         super(props);
@@ -43,7 +48,7 @@ export class Execute extends React.Component<IExecuteProps, IExecuteState> {
 
         this.dataTable = props.dataTableFactory(props.projectId);
         this.dataTable.onData((result) => {
-            if (result && (result as GoodData.ISimpleExecutorResult).isEmpty) {
+            if (isEmptyResult(result)) {
                 onError({ status: ErrorStates.NO_DATA });
             } else {
                 this.setState({ result });
@@ -52,7 +57,7 @@ export class Execute extends React.Component<IExecuteProps, IExecuteState> {
         });
 
         this.dataTable.onError((error) => {
-            const status = get(error, 'response.status');
+            const status = get(error, 'response.status'); // TODO test this!
             if (status === 413) {
                 onLoadingChanged({ isLoading: false });
                 return onError({ status: ErrorStates.DATA_TOO_LARGE_TO_COMPUTE, error });
@@ -71,14 +76,14 @@ export class Execute extends React.Component<IExecuteProps, IExecuteState> {
     }
 
     public componentWillReceiveProps(nextProps: IExecuteProps) {
-        if (this.hasPropsChanged(nextProps, ['afm', 'transformation'])) {
+        if (this.hasPropsChanged(nextProps, ['afm', 'resultSpec'])) {
             this.runExecution(nextProps);
         }
     }
 
     public shouldComponentUpdate(nextProps: IExecuteProps, nextState: IExecuteState) {
         return !isEqual(this.state.result, nextState.result) ||
-            this.hasPropsChanged(nextProps, ['afm', 'transformation', 'children']);
+            this.hasPropsChanged(nextProps, ['afm', 'resultSpec', 'children']);
     }
 
     public render() {
@@ -102,10 +107,10 @@ export class Execute extends React.Component<IExecuteProps, IExecuteState> {
     }
 
     private runExecution(props: IExecuteProps) {
-        const { afm, transformation, onLoadingChanged } = props;
+        const { afm, resultSpec, onLoadingChanged } = props;
 
         onLoadingChanged({ isLoading: true });
 
-        this.dataTable.getData(afm, transformation);
+        this.dataTable.getData(afm, resultSpec);
     }
 }

@@ -2,8 +2,7 @@ jest.mock('gooddata');
 
 import * as React from 'react';
 import { mount } from 'enzyme';
-import { Afm } from '@gooddata/data-layer';
-
+import { AFM } from '@gooddata/typings';
 import {
     Table,
     BaseChart
@@ -89,78 +88,81 @@ describe('Visualization', () => {
     });
 
     it('should replace date filter, if it has same id', () => {
-        const visFilters: Afm.IDateFilter[] = [
-            {
-                id: '/gdc/md/myproject/obj/921',
-                intervalType: 'relative',
-                type: 'date',
-                between: [-51, 0],
-                granularity: 'date'
+        const filter: AFM.IRelativeDateFilter = {
+            relativeDateFilter: {
+                dataSet: {
+                    uri: '/gdc/md/myproject/obj/921'
+                },
+                from: -51,
+                to: 0,
+                granularity: 'GDC.time.date'
             }
-        ];
+        };
 
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
                 uri={CHART_URI}
-                filters={visFilters}
+                filters={[filter]}
             />
         );
 
         return delay().then(() => {
             const node: any = wrapper.getNode();
             expect(node.dataSource.afm.filters).toHaveLength(1);
-            expect(node.dataSource.afm.filters[0]).toEqual(visFilters[0]);
+            expect(node.dataSource.afm.filters[0]).toEqual(filter);
         });
     });
 
     it('should add date filter, if it has different id', () => {
-        const visFilters = [
-            {
-                id: '/gdc/md/myproject/obj/922',
-                type: 'date',
-                between: [-51, 0],
-                granularity: 'date',
-                intervalType: 'relative'
+        const filter: AFM.IRelativeDateFilter = {
+            relativeDateFilter: {
+                dataSet: {
+                    uri: '/gdc/md/myproject/obj/922'
+                },
+                from: -51,
+                to: 0,
+                granularity: 'GDC.time.date'
             }
-        ] as Afm.IDateFilter[];
+        };
 
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
                 uri={CHART_URI}
-                filters={visFilters}
+                filters={[filter]}
             />
         );
 
         return delay().then(() => {
             const node: any = wrapper.getNode();
             expect(node.dataSource.afm.filters).toHaveLength(2);
-            expect(node.dataSource.afm.filters[1]).toEqual(visFilters[0]);
+            expect(node.dataSource.afm.filters[1]).toEqual(filter);
         });
     });
 
     it('should add attribute filter', () => {
-        const visFilters: Afm.IPositiveAttributeFilter[] = [
-            {
-                id: '/gdc/md/myproject/obj/925',
-                type: 'attribute',
+        const filter: AFM.IPositiveAttributeFilter = {
+            positiveAttributeFilter: {
+                displayForm: {
+                    uri: '/gdc/md/myproject/obj/925'
+                },
                 in: ['11', '22', '33']
             }
-        ];
+        };
 
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
                 uri={CHART_URI}
-                filters={visFilters}
+                filters={[filter]}
             />
         );
 
         return delay().then(() => {
             const node: any = wrapper.getNode();
             expect(node.dataSource.afm.filters).toHaveLength(2);
-            expect(node.dataSource.afm.filters[0]).toEqual(visFilters[0]);
+            expect(node.dataSource.afm.filters[0]).toEqual(filter);
         });
     });
 
@@ -198,7 +200,7 @@ describe('Visualization', () => {
         });
 
         return delay(300).then(() => {
-            // initial render without datasources is called during mount
+            // initial render without datasource is called during mount
             expect(spy).toHaveBeenCalledTimes(1);
             spy.mockRestore();
         });
