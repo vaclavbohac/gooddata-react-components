@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { Table } from '../src/components/afm/Table';
 import {
     AFM_TWO_MEASURES_ONE_ATTRIBUTE,
-    RESULT_SPEC_MEASURES_ONE_ATTRIBUTE
+    // RESULT_SPEC_MEASURES_ONE_ATTRIBUTE
 } from './data/afmComponentProps';
 import { onErrorHandler } from './mocks';
 import '../styles/scss/charts.scss';
@@ -15,7 +15,7 @@ storiesOf('AFM components - Table', module)
             <Table
                 projectId="storybook"
                 afm={AFM_TWO_MEASURES_ONE_ATTRIBUTE}
-                resultSpec={RESULT_SPEC_MEASURES_ONE_ATTRIBUTE}
+                /* resultSpec={RESULT_SPEC_MEASURES_ONE_ATTRIBUTE} */
                 onError={onErrorHandler}
             />
         </div>

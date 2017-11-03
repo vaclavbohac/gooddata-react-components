@@ -31,8 +31,19 @@ export interface IDataSourceProviderInjectedProps {
 export type IDataSourceInfoPromise = Promise<IDataSource>;
 
 export function dataSourceProvider<T>(
-    InnerComponent: React.ComponentClass<T & IDataSourceProviderInjectedProps>
+    InnerComponent: React.ComponentClass<T & IDataSourceProviderInjectedProps>,
+    generateDefaultDimensions: Function
 ): React.ComponentClass<IDataSourceProviderProps> {
+    function addDefaultDimensions(
+        afm: AFM.IAfm,
+        resultSpec: AFM.IResultSpec
+    ): AFM.IResultSpec {
+        const dimensions = generateDefaultDimensions(afm);
+        return {
+            dimensions,
+            ...resultSpec
+        };
+    }
 
     return class WrappedComponent
         extends React.Component<IDataSourceProviderProps, IDataSourceProviderInjectedProps> {
@@ -94,11 +105,12 @@ export function dataSourceProvider<T>(
             }
 
             const props = omit<any, IDataSourceProviderProps>(this.props, ['afm', 'projectId', 'resultSpec']);
+            const resultSpec = addDefaultDimensions(this.props.afm, this.props.resultSpec);
             return (
                 <InnerComponent
                     {...props}
                     dataSource={dataSource}
-                    resultSpec={this.props.resultSpec}
+                    resultSpec={resultSpec}
                 />
             );
         }
