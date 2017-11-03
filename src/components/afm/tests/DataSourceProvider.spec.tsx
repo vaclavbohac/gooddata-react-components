@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
+import { AFM } from '@gooddata/typings';
 import {
     dataSourceProvider,
     IDataSourceProviderProps,
@@ -16,11 +17,14 @@ describe('DataSourceProvider', () => {
         resultSpec: {}
     };
 
+    function generateDefaultDimensions(): AFM.IDimension[] {
+        return [];
+    }
     function createComponent(
         component: any,
         props: IDataSourceProviderProps = defaultProps
     ) {
-        const WrappedComponent = dataSourceProvider(component);
+        const WrappedComponent = dataSourceProvider(component, generateDefaultDimensions);
 
         return mount(
             <WrappedComponent {...props} />

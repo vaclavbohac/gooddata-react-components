@@ -42,7 +42,8 @@ const oneMeasureResponse: Execution.IExecutionResponses = {
                 }
             ],
             links: {
-                dataResult: '/gdc/app/projects/d20eyb3wfs0xe5l0lfscdnrnyhq1t42q/executionResults/2651138797087227392'
+                // tslint:disable-next-line:max-line-length
+                executionResult: '/gdc/app/projects/d20eyb3wfs0xe5l0lfscdnrnyhq1t42q/executionResults/2651138797087227392'
             }
         }
     },

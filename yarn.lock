@@ -2,10 +2,11 @@
 # yarn lockfile v1
 
 
-"@gooddata/data-layer@4.0.2-vojty-new-afm-2017-10-31T11-27-06-831Z":
-  version "4.0.2-vojty-new-afm-2017-10-31T11-27-06-831Z"
-  resolved "https://registry.yarnpkg.com/@gooddata/data-layer/-/data-layer-4.0.2-vojty-new-afm-2017-10-31T11-27-06-831Z.tgz#9cd924c982a3b0063ba9aaa5a3b9608da1454f45"
+"@gooddata/data-layer@4.0.2-vojty-new-afm-2017-11-03T14-41-29-631Z":
+  version "4.0.2-vojty-new-afm-2017-11-03T14-41-29-631Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/data-layer/-/data-layer-4.0.2-vojty-new-afm-2017-11-03T14-41-29-631Z.tgz#e22f78e8bf6ce90ae8b884c703a9bac7df8866ea"
   dependencies:
+    chalk "^2.3.0"
     json-stable-stringify "1.0.1"
     lodash "4.17.4"
     rxjs "5.4.3"
@@ -93,6 +94,10 @@
 "@gooddata/typings@0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z":
   version "0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z"
   resolved "https://registry.yarnpkg.com/@gooddata/typings/-/typings-0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z.tgz#9ab7313b4cadb21fd741f1e8e8e9105fb4f09c0d"
+
+"@gooddata/typings@0.0.1-vaclavbohac-init-2017-11-03T09-46-45-561Z":
+  version "0.0.1-vaclavbohac-init-2017-11-03T09-46-45-561Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/typings/-/typings-0.0.1-vaclavbohac-init-2017-11-03T09-46-45-561Z.tgz#2e77c7c658abdf80e5f65f2fd45f873e6e7671ed"
 
 "@hypnosphi/fuse.js@^3.0.9":
   version "3.0.9"
@@ -1818,7 +1823,7 @@ chalk@^1.1.1, chalk@^1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chalk@^2.0.1, chalk@^2.1.0:
+chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.3.0.tgz#b5ea48efc9c1793dccc9b4767c93914d3f2d52ba"
   dependencies:

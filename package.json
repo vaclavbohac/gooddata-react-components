@@ -14,7 +14,6 @@
   ],
   "devDependencies": {
     "@gooddata/mock-js": "0.1.0-vaclavbohac-transform-api-2017-10-31T15-58-18-296Z",
-    "@gooddata/typings": "0.0.1-vaclavbohac-init-2017-10-30T13-27-11-489Z",
     "@storybook/addon-options": "3.2.6",
     "@storybook/react": "3.2.6",
     "@types/classnames": "2.2.3",
@@ -45,10 +44,11 @@
     "typescript": "2.3.3"
   },
   "dependencies": {
-    "@gooddata/data-layer": "4.0.2-vojty-new-afm-2017-10-31T11-27-06-831Z",
+    "@gooddata/data-layer": "4.0.2-vojty-new-afm-2017-11-03T14-41-29-631Z",
     "@gooddata/goodstrap": "53.0.1",
     "@gooddata/indigo-visualizations": "0.13.0-tomasreichmann-doc-new-table-2017-11-02T12-02-43-294Z",
     "@gooddata/js-utils": "0.9.0",
+    "@gooddata/typings": "0.0.1-vaclavbohac-init-2017-11-03T09-46-45-561Z",
     "classnames": "2.2.5",
     "gooddata": "4.3.1",
     "lodash": "4.17.4",
