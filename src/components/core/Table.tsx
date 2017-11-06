@@ -128,7 +128,7 @@ export class Table extends React.Component<ITableProps, ITableState> {
             this.props.visualizationProperties, 'sortItems'
         );
         const sortItemsNext = get<IVisualizationProperties, AFM.SortItem[]>(
-            this.props.visualizationProperties, 'sortItems'
+            nextProps.visualizationProperties, 'sortItems'
         );
         // next sorting needs to be different from previous and also
         // than actual inner sorting to get rid of duplicate execution
@@ -161,7 +161,7 @@ export class Table extends React.Component<ITableProps, ITableState> {
                 sortItems
             }
         });
-        this.initDataLoading(dataSource, resultSpec);
+        this.initDataLoading(dataSource, resultSpec, sortItems);
     }
 
     public onMore({ page }: { page: number }) {
