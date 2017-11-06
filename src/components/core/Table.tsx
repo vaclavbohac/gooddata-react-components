@@ -150,18 +150,18 @@ export class Table extends React.Component<ITableProps, ITableState> {
         this.onError = noop;
     }
 
-    public onSortChange(sortItems: AFM.SortItem[]) {
+    public onSortChange(sortItem: AFM.SortItem) {
         this.setState({
-            sortItems
+            sortItems: [sortItem]
         });
 
         const { dataSource, resultSpec } = this.props;
         this.props.pushData({
             properties: {
-                sortItems
+                sortItems: [sortItem]
             }
         });
-        this.initDataLoading(dataSource, resultSpec, sortItems);
+        this.initDataLoading(dataSource, resultSpec, [sortItem]);
     }
 
     public onMore({ page }: { page: number }) {
@@ -223,7 +223,7 @@ export class Table extends React.Component<ITableProps, ITableState> {
             resultSpec,
             onFiredDrillEvent
         } = this.props;
-        const { result } = this.state;
+        const { result, sortItems } = this.state;
         const {
             executionResponse,
             executionResult
@@ -235,7 +235,7 @@ export class Table extends React.Component<ITableProps, ITableState> {
                 <TableTransformation
                     executionRequest={{
                         afm: dataSource.getAfm(),
-                        resultSpec
+                        resultSpec: ResultSpecUtils.applySorting(resultSpec, sortItems)
                     }}
                     executionResponse={executionResponse.executionResponse}
                     executionResult={executionResult.executionResult}
