@@ -13,7 +13,7 @@
     "LICENSE"
   ],
   "devDependencies": {
-    "@gooddata/mock-js": "0.1.0-vaclavbohac-transform-api-2017-10-31T15-58-18-296Z",
+    "@gooddata/mock-js": "0.1.0-vaclavbohac-transform-api-2017-11-06T09-47-51-126Z",
     "@storybook/addon-options": "3.2.6",
     "@storybook/react": "3.2.6",
     "@types/classnames": "2.2.3",

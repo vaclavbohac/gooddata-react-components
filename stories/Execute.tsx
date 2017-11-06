@@ -50,7 +50,7 @@ storiesOf('Execute', module)
                 projectId={'storybook'}
                 onLoadingChanged={action('loadingChanged')}
             >
-                {(result: ISimpleExecutorResult) => (<pre>{JSON.stringify(result)}</pre>)}
+                {(result: ISimpleExecutorResult) => (<pre>{JSON.stringify(result, null, 2)}</pre>)}
             </Execute>
         </div>
     ));
