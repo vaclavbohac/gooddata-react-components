@@ -17,10 +17,16 @@ jest.mock('@gooddata/indigo-visualizations', () => ({
 import { IDataSource } from '../../../interfaces/DataSource';
 import { Table, ITableProps } from '../Table';
 import { ErrorStates } from '../../../constants/errorStates';
-import { emptyResponse } from '../../../execution/fixtures/ExecuteAfm.fixtures';
+import { oneMeasureResponse, tooLargeResponse } from '../../../execution/fixtures/ExecuteAfm.fixtures';
 
-const emptyResultDataSource: IDataSource = {
-    getData: () => Promise.resolve(emptyResponse),
+const oneMeasureDataSource: IDataSource = {
+    getData: () => Promise.resolve(oneMeasureResponse),
+    getAfm: () => ({}),
+    getFingerprint: () => ('{}')
+};
+
+const tooLargeDataSource: IDataSource = {
+    getData: () => Promise.resolve(tooLargeResponse),
     getAfm: () => ({}),
     getFingerprint: () => ('{}')
 };
@@ -34,7 +40,7 @@ describe('Table', () => {
         return {
             height: 200,
             environment: 'dashboards',
-            dataSource: emptyResultDataSource,
+            dataSource: oneMeasureDataSource,
             ...customProps
         };
     };
@@ -42,12 +48,12 @@ describe('Table', () => {
     it('should call initDataLoading when sorting changed', () => {
         // TODO
         const props = createProps({
-            transformation: {}
+            resultSpec: {}
         });
         const wrapper = createComponent(props);
 
         const newProps = createProps({
-            visualizationProperties: { sorting: 'abc' },
+            visualizationProperties: { sortItems: 'abc' },
             transformation: {}
         });
         wrapper.setProps(newProps);
@@ -61,11 +67,11 @@ describe('Table', () => {
         const onError = jest.fn();
         const props = createProps({
             onError,
-            dataSource: emptyResultDataSource
+            dataSource: oneMeasureDataSource
         });
         const wrapper = createComponent(props);
         wrapper.setProps({
-            dataSource: emptyResultDataSource
+            dataSource: oneMeasureDataSource
         });
 
         return delay().then(() => {
@@ -132,7 +138,8 @@ describe('Table', () => {
     it('should call onError with DATA_TOO_LARGE', () => {
         const onError = jest.fn();
         const props = createProps({
-            onError
+            onError,
+            dataSource: tooLargeDataSource
         });
         const wrapper = createComponent(props);
 
@@ -151,6 +158,7 @@ describe('Table', () => {
         const props = createProps({
             pushData
         });
+        // TODO different result
         const resultMock: { result: any, sorting: Object, metadata: Object } = {
             result: {
                 isLoaded: true,

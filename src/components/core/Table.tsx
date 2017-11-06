@@ -27,6 +27,7 @@ import { TablePropTypes, Requireable } from '../../proptypes/Table';
 import { ErrorStates } from '../../constants/errorStates';
 import { VisualizationEnvironment } from '../uri/Visualization';
 import { getVisualizationOptions } from '../../helpers/options';
+import { checkForErrors } from '../../helpers/errorHandler';
 
 export { Requireable };
 
@@ -288,14 +289,18 @@ export class Table extends React.Component<ITableProps, ITableState> {
     }
 
     private initDataLoading(
-        dataSource: DataSource.IDataSource<any>,
+        dataSource: DataSource.IDataSource<Execution.AfmExecutionResponse>,
         resultSpec: AFM.IResultSpec,
         sortItems: AFM.SortItem[] = []
     ) {
         this.onLoadingChanged({ isLoading: true });
 
         const sortedResultSpec: AFM.IResultSpec = ResultSpecUtils.applySorting(resultSpec, sortItems);
-        const promise = dataSource.getData(sortedResultSpec);
+        const promise = dataSource.getData(sortedResultSpec)
+            .then((result: Execution.AfmExecutionResponse) => {
+                checkForErrors(result);
+                return result;
+            });
         this.subject.next(promise);
     }
 }

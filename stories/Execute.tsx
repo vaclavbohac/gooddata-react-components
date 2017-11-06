@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import { ISimpleExecutorResult } from 'gooddata';
-import { AFM } from '@gooddata/typings';
+import { AFM, Execution } from '@gooddata/typings';
 import { Execute } from '../src/execution/Execute';
 
 const afm: AFM.IAfm = {
@@ -31,7 +30,7 @@ const afm: AFM.IAfm = {
 };
 
 const usage = `
-    <Execute afm={afm} transformation={transformation} projectId={projectId}>
+    <Execute afm={afm} resultSpec={resultSpec} projectId={projectId}>
         {result => ...}
     </Execute>
 `;
@@ -40,7 +39,7 @@ storiesOf('Execute', module)
     .add('Execute', () => (
         <div>
             <h4>Execute</h4>
-            <p>Component which can execute AFM with Transformation</p>
+            <p>Component which can execute AFM with ResultSpec</p>
             <h5>Usage:</h5>
             <pre>{usage}</pre>
 
@@ -50,7 +49,7 @@ storiesOf('Execute', module)
                 projectId={'storybook'}
                 onLoadingChanged={action('loadingChanged')}
             >
-                {(result: ISimpleExecutorResult) => (<pre>{JSON.stringify(result, null, 2)}</pre>)}
+                {(result: Execution.AfmExecutionResponse) => (<pre>{JSON.stringify(result, null, 2)}</pre>)}
             </Execute>
         </div>
     ));
