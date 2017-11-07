@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
-import { AFM } from '@gooddata/typings';
 import {
     Table,
     BaseChart
@@ -149,7 +148,7 @@ describe('Visualization', () => {
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
-                identifier={CHART_IDENTIFIER}
+                identifier={TABLE_IDENTIFIER}
                 uriResolver={uriResolver}
                 fetchVisObject={fetchVisObject}
                 BaseChartComponent={BaseChart}
@@ -161,7 +160,7 @@ describe('Visualization', () => {
 
         // Would throw an error if not handled properly
         wrapper.unmount();
-        return delay(300).then(() => {
+        return delay(FAST + 1).then(() => {
             expect(spy).not.toHaveBeenCalled();
             spy.mockRestore();
         });

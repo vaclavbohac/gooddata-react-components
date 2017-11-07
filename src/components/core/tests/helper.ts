@@ -1,11 +1,6 @@
-import { Execution } from '@gooddata/typings';
 import { IChartProps } from '../base/BaseChart';
 import { IDataSource } from '../../../interfaces/DataSource';
-
-// TODO copy and paste from BaseChart.spec file
-const emptyResponse: Execution.IError = {
-    code: 204
-};
+import { emptyResponse } from '../../../execution/fixtures/ExecuteAfm.fixtures';
 
 export function getComponentProps(): IChartProps {
     const dataSource: IDataSource = {
