@@ -60,6 +60,11 @@ export interface IVisualizationProps extends IEvents {
     filters?: AFM.FilterItem[];
     drillableItems?: IDrillableItem[];
     uriResolver?: (projectId: string, uri?: string, identifier?: string) => Promise<string>;
+    fetchVisObject?: (visualizationUri: string) => Promise<VisualizationObject.IVisualizationObject>;
+    // TODO: Replace any with proper type
+    BaseChartComponent?: any;
+    // TODO: Replace any with proper type
+    TableComponent?: any;
 }
 
 export interface IVisualizationState {
@@ -86,13 +91,22 @@ function uriResolver(projectId: string, uri?: string, identifier?: string): Prom
     return GoodData.md.getObjectUri(projectId, identifier);
 }
 
+function fetchVisObject(visualizationUri: string): Promise<VisualizationObject.IVisualizationObject> {
+    return GoodData.xhr.get<VisualizationObject.IVisualizationObjectResponse>(visualizationUri)
+        .then(response => response.visualization);
+}
+
 export class Visualization extends React.Component<IVisualizationProps, IVisualizationState> {
+    // TODO: Update visualization prop types
     public static propTypes = VisualizationPropType;
 
     public static defaultProps: Partial<IVisualizationProps> = {
         onError: noop,
         filters: [],
-        uriResolver
+        uriResolver,
+        fetchVisObject,
+        BaseChartComponent: BaseChart,
+        TableComponent: Table
     };
 
     private visualizationUri: string;
@@ -187,14 +201,16 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
             onError,
             onLoadingChanged,
             locale,
-            config
+            config,
+            BaseChartComponent,
+            TableComponent
         } = this.props;
         const { resultSpec, type } = this.state;
 
         switch (type) {
             case VisualizationTypes.TABLE:
                 return (
-                    <Table
+                    <TableComponent
                         dataSource={dataSource}
                         resultSpec={resultSpec}
                         drillableItems={drillableItems}
@@ -206,15 +222,15 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
                 );
             default:
                 return (
-                    <BaseChart
+                    <BaseChartComponent
                         dataSource={dataSource}
                         resultSpec={resultSpec}
                         drillableItems={drillableItems}
                         onFiredDrillEvent={onFiredDrillEvent}
                         onError={onError}
                         onLoadingChanged={onLoadingChanged}
-                        type={type}
                         locale={locale}
+                        type={type}
                         config={config}
                     />
                 );
@@ -228,9 +244,11 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
     ) {
         const promise = this.props.uriResolver(projectId, this.visualizationUri, identifier)
             .then((visualizationUri: string) => {
-                this.visualizationUri = visualizationUri;
-                return GoodData.xhr.get<VisualizationObject.IVisualizationObjectResponse>(visualizationUri)
-                    .then(response => response.visualization);
+                // Cache uri for next execution
+                return this.visualizationUri = visualizationUri;
+            })
+            .then((visualizationUri: string) => {
+                return this.props.fetchVisObject(visualizationUri);
             })
             .then((mdObject: VisualizationObject.IVisualizationObject) => {
                 const { afm, resultSpec } = toAfmResultSpec(mdObject.content);

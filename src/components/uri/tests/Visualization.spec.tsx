@@ -1,5 +1,3 @@
-jest.mock('gooddata');
-
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { AFM } from '@gooddata/typings';
@@ -7,14 +5,9 @@ import {
     Table,
     BaseChart
 } from '../../tests/mocks';
+import { charts } from '../../../../__mocks__/fixtures';
 
-jest.mock('../../core/Table', () => ({
-    Table
-}));
-jest.mock('../../core/base/BaseChart', () => ({
-    BaseChart
-}));
-
+import { VisualizationObject } from '@gooddata/data-layer';
 import { Visualization } from '../Visualization';
 import { ErrorStates } from '../../../constants/errorStates';
 import { delay } from '../../tests/utils';
@@ -22,9 +15,11 @@ import { delay } from '../../tests/utils';
 const projectId = 'myproject';
 const CHART_URI = `/gdc/md/${projectId}/obj/1`;
 const TABLE_URI = `/gdc/md/${projectId}/obj/2`;
+const CHART_IDENTIFIER = 'chart';
+const TABLE_IDENTIFIER = 'table';
 
-const SLOW = 100;
-const FAST = 10;
+const SLOW = 20;
+const FAST = 5;
 
 function getResponse(response: string, delay: number): Promise<string> {
     return new Promise((resolve) => {
@@ -32,13 +27,23 @@ function getResponse(response: string, delay: number): Promise<string> {
     });
 }
 
+function fetchVisObject(uri: string): Promise<VisualizationObject.IVisualizationObject> {
+    const visObj = charts.find(chart => chart.visualization.meta.uri === uri);
+
+    if (!visObj) {
+        throw new Error(`Unknown uri ${uri}`);
+    }
+
+    return Promise.resolve(visObj.visualization);
+}
+
 // tslint:disable-next-line:variable-name
 function uriResolver(_projectId: string, _uri: string, identifier: string): Promise<string> {
-    if (identifier === 'table') {
+    if (identifier === TABLE_IDENTIFIER) {
         return getResponse(TABLE_URI, FAST);
     }
 
-    if (identifier === 'chart') {
+    if (identifier === CHART_IDENTIFIER) {
         return getResponse(CHART_URI, SLOW);
     }
 
@@ -50,11 +55,14 @@ describe('Visualization', () => {
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
-                uri={CHART_URI}
+                identifier={CHART_IDENTIFIER}
+                fetchVisObject={fetchVisObject}
+                uriResolver={uriResolver}
+                BaseChartComponent={BaseChart}
             />
         );
 
-        return delay().then(() => {
+        return delay(SLOW + 1).then(() => {
             expect(wrapper.find(BaseChart).length).toBe(1);
         });
     });
@@ -63,11 +71,14 @@ describe('Visualization', () => {
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
-                uri={TABLE_URI}
+                identifier={TABLE_IDENTIFIER}
+                fetchVisObject={fetchVisObject}
+                uriResolver={uriResolver}
+                TableComponent={Table}
             />
         );
 
-        return delay().then(() => {
+        return delay(SLOW).then(() => {
             expect(wrapper.find(Table).length).toBe(1);
         });
     });
@@ -176,7 +187,7 @@ describe('Visualization', () => {
             />
         );
 
-        wrapper.setProps({ identifier: 'table' });
+        wrapper.setProps({ identifier: TABLE_IDENTIFIER });
 
         return delay(300).then(() => {
             expect(wrapper.find(Table).length).toBe(1);
