@@ -158,32 +158,14 @@ describe('Table', () => {
         const props = createProps({
             pushData
         });
-        // TODO different result
-        const resultMock: { result: any, sorting: Object, metadata: Object } = {
-            result: {
-                isLoaded: true,
-                rawData: [
-                    [
-                        {
-                            id: '1',
-                            name: 'sesit'
-                        }
-                    ]
-                ],
-                warnings: [],
-                isEmpty: false
-            },
-            sorting: {},
-            metadata: {}
-        };
         createComponent(props);
 
         return delay().then(() => {
             expect(pushData).toHaveBeenCalledWith({
-                executionResult: resultMock.result,
+                result: oneMeasureResponse,
                 options: {
                     dateOptionsDisabled: false
-                }
+                },
             });
         });
     });

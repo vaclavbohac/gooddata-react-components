@@ -16,6 +16,7 @@ export interface IKpiProps extends IEvents {
     projectId: string;
     filters?: AFM.FilterItem[];
     format?: string;
+    ExecuteComponent?: any; // TODO
 }
 
 function buildAFM(measure: string, filters: AFM.FilterItem[] = []): AFM.IAfm {
@@ -50,20 +51,21 @@ export class Kpi extends React.Component<IKpiProps, null> {
         format: '$0,0.00',
         filters: [],
         onError: defaultErrorHandler,
-        onLoadingChanged: noop
+        onLoadingChanged: noop,
+        ExecuteComponent: Execute
     };
 
     public static propTypes = KpiPropTypes;
 
     public render() {
-        const afm = buildAFM(this.props.measure, this.props.filters);
-
+        const { ExecuteComponent, measure, filters, projectId, onError, onLoadingChanged } = this.props;
+        const afm = buildAFM(measure, filters);
         return (
-            <Execute
+            <ExecuteComponent
                 afm={afm}
-                projectId={this.props.projectId}
-                onError={this.props.onError}
-                onLoadingChanged={this.props.onLoadingChanged}
+                projectId={projectId}
+                onError={onError}
+                onLoadingChanged={onLoadingChanged}
             >
                 {(result: Execution.IExecutionResponses) =>
                     <span className="gdc-kpi">
@@ -72,7 +74,7 @@ export class Kpi extends React.Component<IKpiProps, null> {
                         )}
                     </span>
                 }
-            </Execute>
+            </ExecuteComponent>
         );
     }
 
