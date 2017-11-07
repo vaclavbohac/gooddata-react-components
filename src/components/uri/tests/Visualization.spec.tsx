@@ -98,98 +98,22 @@ describe('Visualization', () => {
         );
     });
 
-    it('should replace date filter, if it has same id', () => {
-        const filter: AFM.IRelativeDateFilter = {
-            relativeDateFilter: {
-                dataSet: {
-                    uri: '/gdc/md/myproject/obj/921'
-                },
-                from: -51,
-                to: 0,
-                granularity: 'GDC.time.date'
-            }
-        };
-
-        const wrapper = mount(
-            <Visualization
-                projectId={projectId}
-                uri={CHART_URI}
-                filters={[filter]}
-            />
-        );
-
-        return delay().then(() => {
-            const node: any = wrapper.getNode();
-            expect(node.dataSource.afm.filters).toHaveLength(1);
-            expect(node.dataSource.afm.filters[0]).toEqual(filter);
-        });
-    });
-
-    it('should add date filter, if it has different id', () => {
-        const filter: AFM.IRelativeDateFilter = {
-            relativeDateFilter: {
-                dataSet: {
-                    uri: '/gdc/md/myproject/obj/922'
-                },
-                from: -51,
-                to: 0,
-                granularity: 'GDC.time.date'
-            }
-        };
-
-        const wrapper = mount(
-            <Visualization
-                projectId={projectId}
-                uri={CHART_URI}
-                filters={[filter]}
-            />
-        );
-
-        return delay().then(() => {
-            const node: any = wrapper.getNode();
-            expect(node.dataSource.afm.filters).toHaveLength(2);
-            expect(node.dataSource.afm.filters[1]).toEqual(filter);
-        });
-    });
-
-    it('should add attribute filter', () => {
-        const filter: AFM.IPositiveAttributeFilter = {
-            positiveAttributeFilter: {
-                displayForm: {
-                    uri: '/gdc/md/myproject/obj/925'
-                },
-                in: ['11', '22', '33']
-            }
-        };
-
-        const wrapper = mount(
-            <Visualization
-                projectId={projectId}
-                uri={CHART_URI}
-                filters={[filter]}
-            />
-        );
-
-        return delay().then(() => {
-            const node: any = wrapper.getNode();
-            expect(node.dataSource.afm.filters).toHaveLength(2);
-            expect(node.dataSource.afm.filters[0]).toEqual(filter);
-        });
-    });
-
     it('should handle slow requests', () => {
         // Response from first request comes back later that from the second one
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
-                identifier={'chart'}
+                identifier={CHART_IDENTIFIER}
                 uriResolver={uriResolver}
+                fetchVisObject={fetchVisObject}
+                BaseChartComponent={BaseChart}
+                TableComponent={Table}
             />
         );
 
         wrapper.setProps({ identifier: TABLE_IDENTIFIER });
 
-        return delay(300).then(() => {
+        return delay(SLOW + 1).then(() => {
             expect(wrapper.find(Table).length).toBe(1);
         });
     });
@@ -200,6 +124,10 @@ describe('Visualization', () => {
                 projectId={projectId}
                 uri={CHART_URI}
                 filters={[]}
+                uriResolver={uriResolver}
+                fetchVisObject={fetchVisObject}
+                BaseChartComponent={BaseChart}
+                TableComponent={Table}
             />
         );
         const spy = jest.spyOn(wrapper.instance(), 'render');
@@ -210,9 +138,9 @@ describe('Visualization', () => {
             filters: []
         });
 
-        return delay(300).then(() => {
+        return delay(SLOW + 1).then(() => {
             // initial render without datasource is called during mount
-            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(0);
             spy.mockRestore();
         });
     });
@@ -221,8 +149,11 @@ describe('Visualization', () => {
         const wrapper = mount(
             <Visualization
                 projectId={projectId}
-                identifier={'chart'}
+                identifier={CHART_IDENTIFIER}
                 uriResolver={uriResolver}
+                fetchVisObject={fetchVisObject}
+                BaseChartComponent={BaseChart}
+                TableComponent={Table}
             />
         );
 
