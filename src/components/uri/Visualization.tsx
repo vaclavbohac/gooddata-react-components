@@ -61,9 +61,7 @@ export interface IVisualizationProps extends IEvents {
     drillableItems?: IDrillableItem[];
     uriResolver?: (projectId: string, uri?: string, identifier?: string) => Promise<string>;
     fetchVisObject?: (visualizationUri: string) => Promise<VisualizationObject.IVisualizationObject>;
-    // TODO: Replace any with proper type
     BaseChartComponent?: any;
-    // TODO: Replace any with proper type
     TableComponent?: any;
 }
 

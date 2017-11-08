@@ -16,17 +16,13 @@ export interface IKpiProps extends IEvents {
     projectId: string;
     filters?: AFM.FilterItem[];
     format?: string;
-    ExecuteComponent?: any; // TODO
+    ExecuteComponent?: any;
 }
 
 function buildAFM(measure: string, filters: AFM.FilterItem[] = []): AFM.IAfm {
-    const item = Uri.isUri(measure) ? {
-        uri: measure
-    } : {
-        identifier: measure
-    };
+    const item = Uri.isUri(measure) ? { uri: measure } : { identifier: measure };
 
-    const afm: AFM.IAfm = {
+    return {
         measures: [
             {
                 localIdentifier: 'm1',
@@ -39,7 +35,6 @@ function buildAFM(measure: string, filters: AFM.FilterItem[] = []): AFM.IAfm {
         ],
         filters: filters.filter(Filters.isNotEmptyFilter)
     };
-    return afm;
 }
 
 const defaultErrorHandler = (error: Object) => {
