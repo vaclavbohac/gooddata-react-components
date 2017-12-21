@@ -1,16 +1,15 @@
 import * as React from 'react';
 import * as GoodData from 'gooddata';
 import noop = require('lodash/noop');
-import isEmpty = require('lodash/isEmpty');
+import get = require('lodash/get');
 import isEqual = require('lodash/isEqual');
 import {
     AfmUtils,
     ExecuteAfmAdapter,
-    VisualizationObject,
     toAfmResultSpec,
     createSubject
 } from '@gooddata/data-layer';
-import { AFM } from '@gooddata/typings';
+import { AFM, VisualizationObject, VisualizationClass } from '@gooddata/typings';
 
 import { BaseChart, IChartConfig } from '../core/base/BaseChart';
 import { SortableTable } from '../core/SortableTable';
@@ -19,10 +18,12 @@ import { VisualizationPropType, Requireable } from '../../proptypes/Visualizatio
 import { VisualizationTypes, VisType } from '../../constants/visualizationTypes';
 import { IDataSource } from '../../interfaces/DataSource';
 import { ISubject } from '../../helpers/async';
+import { getVisualizationType } from '../../helpers/visualizationType';
+import * as MdObjectHelper from '../../helpers/MdObjectHelper';
 import {
-    ITotalItem,
     IDrillableItem,
-    ErrorStates
+    ErrorStates,
+    generateDimensions
 } from '../../';
 
 export { Requireable };
@@ -63,6 +64,7 @@ export interface IVisualizationProps extends IEvents {
     drillableItems?: IDrillableItem[];
     uriResolver?: (projectId: string, uri?: string, identifier?: string) => Promise<string>;
     fetchVisObject?: (visualizationUri: string) => Promise<VisualizationObject.IVisualizationObject>;
+    fetchVisualizationClass?: (visualizationUri: string) => Promise<VisualizationClass.IVisualizationClass>;
     BaseChartComponent?: any;
     TableComponent?: any;
 }
@@ -71,14 +73,14 @@ export interface IVisualizationState {
     isLoading: boolean;
     resultSpec: AFM.IResultSpec;
     type: VisType;
-    totals: ITotalItem[];
+    totals: VisualizationObject.IVisualizationTotal[];
 }
 
 export interface IVisualizationExecInfo {
     dataSource: IDataSource;
     resultSpec: AFM.IResultSpec;
     type: VisType;
-    totals: ITotalItem[];
+    totals: VisualizationObject.IVisualizationTotal[];
 }
 
 function uriResolver(projectId: string, uri?: string, identifier?: string): Promise<string> {
@@ -95,7 +97,12 @@ function uriResolver(projectId: string, uri?: string, identifier?: string): Prom
 
 function fetchVisObject(visualizationUri: string): Promise<VisualizationObject.IVisualizationObject> {
     return GoodData.xhr.get<VisualizationObject.IVisualizationObjectResponse>(visualizationUri)
-        .then(response => response.visualization);
+        .then(response => response.visualizationObject);
+}
+
+function fetchVisualizationClass(visualizationClassUri: string): Promise<VisualizationClass.IVisualizationClass> {
+    return GoodData.xhr.get<VisualizationClass.IVisualizationClassWrapped>(visualizationClassUri)
+        .then(response => response.visualizationClass);
 }
 
 export class Visualization extends React.Component<IVisualizationProps, IVisualizationState> {
@@ -106,6 +113,7 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
         filters: [],
         uriResolver,
         fetchVisObject,
+        fetchVisualizationClass,
         BaseChartComponent: BaseChart,
         TableComponent: SortableTable
     };
@@ -246,24 +254,31 @@ export class Visualization extends React.Component<IVisualizationProps, IVisuali
                 return this.props.fetchVisObject(visualizationUri);
             })
             .then((mdObject: VisualizationObject.IVisualizationObject) => {
-                const translatedPopSuffix = ' - previous year'; // TODO change hardcoded PoP suffix with new visObj
+                const visualizationClass: string = get(mdObject, 'content.visualizationClass.uri', '');
+                return this.props.fetchVisualizationClass(visualizationClass).then((visualizationClass) => {
+                    const { afm, resultSpec } = toAfmResultSpec(mdObject.content);
 
-                const visObjTotals = mdObject.content.buckets.totals;
-                const totals = !isEmpty(visObjTotals) ?
-                    visObjTotals.map(visObjTotal => visObjTotal.total) : [];
+                    const mdObjectTotals = MdObjectHelper.getTotals(mdObject);
 
-                const { afm, resultSpec } = toAfmResultSpec(mdObject.content, translatedPopSuffix);
-                const dateFilter = getDateFilter(filters);
-                const attributeFilters = getAttributeFilters(filters);
-                const afmWithFilters = AfmUtils.appendFilters(afm, attributeFilters, dateFilter);
-                return this.adapter.createDataSource(afmWithFilters)
-                    .then((dataSource: IDataSource) => {
-                        return {
-                            type: mdObject.content.type,
-                            dataSource,
-                            resultSpec,
-                            totals
-                        };
+                    const dateFilter = getDateFilter(filters);
+                    const attributeFilters = getAttributeFilters(filters);
+                    const afmWithFilters = AfmUtils.appendFilters(afm, attributeFilters, dateFilter);
+
+                    const visualizationType: VisType = getVisualizationType(get(visualizationClass, 'content.url', ''));
+                    const resultSpecWithDimensions = {
+                        ...resultSpec,
+                        dimensions: generateDimensions(mdObject.content, visualizationType)
+                    };
+
+                    return this.adapter.createDataSource(afmWithFilters)
+                        .then((dataSource: IDataSource) => {
+                            return {
+                                type: visualizationType,
+                                dataSource,
+                                resultSpec: resultSpecWithDimensions,
+                                totals: mdObjectTotals
+                            };
+                        });
                     });
                 });
         this.subject.next(promise);

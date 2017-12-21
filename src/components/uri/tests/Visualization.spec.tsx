@@ -4,16 +4,14 @@ import {
     Table,
     BaseChart
 } from '../../tests/mocks';
-import { charts } from '../../../../__mocks__/fixtures';
+import { charts, visualizationClasses } from '../../../../__mocks__/fixtures';
 
-import { VisualizationObject } from '@gooddata/data-layer';
+import { AFM, VisualizationObject, VisualizationClass } from '@gooddata/typings';
 import { Visualization } from '../Visualization';
 import { ErrorStates } from '../../../constants/errorStates';
 import { delay } from '../../tests/utils';
 import { SortableTable } from '../../core/SortableTable';
 import {VisualizationTypes} from '../../../constants/visualizationTypes';
-import {AFM} from '@gooddata/typings';
-import {ITotalItem} from '../../../index';
 
 const projectId = 'myproject';
 const CHART_URI = `/gdc/md/${projectId}/obj/1`;
@@ -40,6 +38,16 @@ function fetchVisObject(uri: string): Promise<VisualizationObject.IVisualization
     return Promise.resolve(visObj.visualization);
 }
 
+function fetchVisualizationClass(visualizationClassUri: string): Promise<VisualizationClass.IVisualizationClass> {
+    const visClass = visualizationClasses.find(vc => vc.visualizationClass.meta.uri === visualizationClassUri);
+
+    if (!visClass) {
+        throw new Error(`Unknown uri ${visualizationClassUri}`);
+    }
+
+    return Promise.resolve(visClass.visualizationClass);
+}
+
 // tslint:disable-next-line:variable-name
 function uriResolver(_projectId: string, _uri: string, identifier: string): Promise<string> {
     if (identifier === TABLE_IDENTIFIER) {
@@ -60,6 +68,7 @@ describe('Visualization', () => {
                 projectId={projectId}
                 identifier={CHART_IDENTIFIER}
                 fetchVisObject={fetchVisObject}
+                fetchVisualizationClass={fetchVisualizationClass}
                 uriResolver={uriResolver}
                 BaseChartComponent={BaseChart}
             />
@@ -76,6 +85,7 @@ describe('Visualization', () => {
                 projectId={projectId}
                 identifier={TABLE_IDENTIFIER}
                 fetchVisObject={fetchVisObject}
+                fetchVisualizationClass={fetchVisualizationClass}
                 uriResolver={uriResolver}
             />
         );
@@ -105,11 +115,12 @@ describe('Visualization', () => {
             ]
         };
 
-        const expectedTotals: ITotalItem[] = [
+        const expectedTotals: VisualizationObject.IVisualizationTotal[] = [
             {
                 type: 'avg',
                 alias: 'average',
-                outputMeasureIndexes: [0]
+                measureIdentifier: 'm1',
+                attributeIdentifier: 'a1'
             }
         ];
 
@@ -145,6 +156,7 @@ describe('Visualization', () => {
                 identifier={CHART_IDENTIFIER}
                 uriResolver={uriResolver}
                 fetchVisObject={fetchVisObject}
+                fetchVisualizationClass={fetchVisualizationClass}
                 BaseChartComponent={BaseChart}
                 TableComponent={Table}
             />

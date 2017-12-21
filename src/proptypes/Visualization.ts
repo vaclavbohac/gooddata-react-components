@@ -17,5 +17,10 @@ export const VisualizationPropType = {
     projectId: PropTypes.string.isRequired,
     identifier: PropTypes.string,
     uri: PropTypes.string,
-    uriResolver: PropTypes.func
+    uriResolver: PropTypes.func,
+    locale: PropTypes.string,
+    fetchVisObject: PropTypes.func,
+    fetchVisualizationClass: PropTypes.func,
+    BaseChartComponent: PropTypes.func,
+    TableComponent: PropTypes.func
 };
