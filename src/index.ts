@@ -16,6 +16,7 @@ import { AttributeElements } from './components/filters/AttributeFilter/Attribut
 import * as PropTypes from './proptypes/index';
 import { generateDimensions } from './helpers/dimensions';
 import * as BucketNames from './constants/bucketNames';
+import { ColumnChart } from './components/ColumnChart';
 
 const CoreComponents = {
     Table,
@@ -29,6 +30,7 @@ export {
     BucketNames,
     CoreComponents,
     CatalogHelper,
+    ColumnChart,
     ChartType,
     ErrorCodes,
     ErrorStates,
