@@ -18,6 +18,9 @@ import { generateDimensions } from './helpers/dimensions';
 import * as BucketNames from './constants/bucketNames';
 import * as PoPHelper from './helpers/popHelper';
 
+// Final interface PoC
+import { ColumnChart } from './components/ColumnChart';
+
 const CoreComponents = {
     Table,
     BaseChart
@@ -30,6 +33,7 @@ export {
     BucketNames,
     CoreComponents,
     CatalogHelper,
+    ColumnChart,
     ChartType,
     ErrorCodes,
     ErrorStates,
