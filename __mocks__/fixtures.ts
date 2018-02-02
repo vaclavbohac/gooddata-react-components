@@ -143,7 +143,7 @@ export const charts: [{ visualization: VisualizationObject.IVisualizationObject 
                     }
                 ],
                 properties: JSON.stringify({
-                    sorts: [
+                    sortItems: [
                         {
                             attributeSortItem: {
                                 direction: 'asc',

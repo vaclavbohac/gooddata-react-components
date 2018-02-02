@@ -1,13 +1,13 @@
 // todo-mms: Consider to implement MDObject class to encapsulate all kind of helper methods around mdObject data
 import { VisualizationObject } from '@gooddata/typings';
 import get = require('lodash/get');
-import { MEASURES } from '../constants/bucketNames';
+import { ATTRIBUTE } from '../constants/bucketNames';
 
 export function getTotals(mdObject: VisualizationObject.IVisualizationObject):
     VisualizationObject.IVisualizationTotal[] {
 
-    const measures: VisualizationObject.IBucket = mdObject.content.buckets
-        .find(bucket => bucket.localIdentifier === MEASURES);
+    const attributes: VisualizationObject.IBucket = mdObject.content.buckets
+        .find(bucket => bucket.localIdentifier === ATTRIBUTE);
 
-    return get(measures, 'totals', []);
+    return get(attributes, 'totals', []);
 }
