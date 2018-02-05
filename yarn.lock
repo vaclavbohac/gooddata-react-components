@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@gooddata/data-layer@5.0.4-pbenes-visualization-object-2018-02-05T08-11-41-210Z":
-  version "5.0.4-pbenes-visualization-object-2018-02-05T08-11-41-210Z"
-  resolved "https://registry.yarnpkg.com/@gooddata/data-layer/-/data-layer-5.0.4-pbenes-visualization-object-2018-02-05T08-11-41-210Z.tgz#211b7d390fe1145a2ddd965f75aa15684ff7cdf5"
+"@gooddata/data-layer@5.0.4-pbenes-visualization-object-2018-02-05T08-30-28-003Z":
+  version "5.0.4-pbenes-visualization-object-2018-02-05T08-30-28-003Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/data-layer/-/data-layer-5.0.4-pbenes-visualization-object-2018-02-05T08-30-28-003Z.tgz#7d375ce1b0427ace26f0a8388016259effb3df78"
   dependencies:
     json-stable-stringify "^1.0.1"
     lodash "^4.17.4"
@@ -36,9 +36,9 @@
     react-textarea-autosize "4.0.5"
     rxjs "5.4.3"
 
-"@gooddata/goodstrap@53.2.0-pbenes-visualization-object-2018-02-05T08-13-12-395Z":
-  version "53.2.0-pbenes-visualization-object-2018-02-05T08-13-12-395Z"
-  resolved "https://registry.yarnpkg.com/@gooddata/goodstrap/-/goodstrap-53.2.0-pbenes-visualization-object-2018-02-05T08-13-12-395Z.tgz#da632b2c6de5f05c1eb5fa862b9a663fb92b3f0c"
+"@gooddata/goodstrap@53.2.0-pbenes-visualization-object-2018-02-05T08-31-58-591Z":
+  version "53.2.0-pbenes-visualization-object-2018-02-05T08-31-58-591Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/goodstrap/-/goodstrap-53.2.0-pbenes-visualization-object-2018-02-05T08-31-58-591Z.tgz#09921b41ec92f4a98423a61dde3bd368d3cea2b7"
   dependencies:
     "@gooddata/js-utils" "0.7.1"
     classnames "2.2.5"
@@ -97,11 +97,11 @@
     moment "2.17.1"
     moment-timezone "0.5.11"
 
-"@gooddata/mock-js@0.2.5-pbenes-visualization-object-2018-02-05T08-14-38-829Z":
-  version "0.2.5-pbenes-visualization-object-2018-02-05T08-14-38-829Z"
-  resolved "https://registry.yarnpkg.com/@gooddata/mock-js/-/mock-js-0.2.5-pbenes-visualization-object-2018-02-05T08-14-38-829Z.tgz#39bb63dda442de7d0304a7b2b12e50fdde462913"
+"@gooddata/mock-js@0.2.5-pbenes-visualization-object-2018-02-05T08-33-24-295Z":
+  version "0.2.5-pbenes-visualization-object-2018-02-05T08-33-24-295Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/mock-js/-/mock-js-0.2.5-pbenes-visualization-object-2018-02-05T08-33-24-295Z.tgz#407cdb58c5acfaf916b078eaba3f10c566ceb4c3"
   dependencies:
-    "@gooddata/typings" "0.0.5-pbenes-visualization-object-2018-02-05T08-08-31-565Z"
+    "@gooddata/typings" "0.0.5-pbenes-visualization-object-2018-02-05T08-27-19-634Z"
     "@types/uuid" "3.4.3"
     body-parser "1.17.1"
     es6-promise "4.1.0"
@@ -132,9 +132,9 @@
     lodash "4.17.4"
     node-glob "1.2.0"
 
-"@gooddata/typings@0.0.5-pbenes-visualization-object-2018-02-05T08-08-31-565Z":
-  version "0.0.5-pbenes-visualization-object-2018-02-05T08-08-31-565Z"
-  resolved "https://registry.yarnpkg.com/@gooddata/typings/-/typings-0.0.5-pbenes-visualization-object-2018-02-05T08-08-31-565Z.tgz#43ce659420d58d6673503560e969a6a80f6506a9"
+"@gooddata/typings@0.0.5-pbenes-visualization-object-2018-02-05T08-27-19-634Z":
+  version "0.0.5-pbenes-visualization-object-2018-02-05T08-27-19-634Z"
+  resolved "https://registry.yarnpkg.com/@gooddata/typings/-/typings-0.0.5-pbenes-visualization-object-2018-02-05T08-27-19-634Z.tgz#e46386cdc4fb6b057438c83ffb40c43016fd2f9b"
 
 "@storybook/addon-actions@3.2.18", "@storybook/addon-actions@^3.2.6":
   version "3.2.18"
@@ -3545,11 +3545,11 @@ globule@^1.0.0:
     lodash "~4.17.4"
     minimatch "~3.0.2"
 
-gooddata@4.5.0-pbenes-visualization-object-2018-02-05T08-10-05-788Z:
-  version "4.5.0-pbenes-visualization-object-2018-02-05T08-10-05-788Z"
-  resolved "https://registry.yarnpkg.com/gooddata/-/gooddata-4.5.0-pbenes-visualization-object-2018-02-05T08-10-05-788Z.tgz#45dad0adc70ec2187daf4fbe2f2e8911d6667550"
+gooddata@4.5.0-pbenes-visualization-object-2018-02-05T08-28-52-559Z:
+  version "4.5.0-pbenes-visualization-object-2018-02-05T08-28-52-559Z"
+  resolved "https://registry.yarnpkg.com/gooddata/-/gooddata-4.5.0-pbenes-visualization-object-2018-02-05T08-28-52-559Z.tgz#15fa0a74bcd26daf41bd23498ce3ad1db33f02f6"
   dependencies:
-    "@gooddata/typings" "0.0.5-pbenes-visualization-object-2018-02-05T08-08-31-565Z"
+    "@gooddata/typings" "0.0.5-pbenes-visualization-object-2018-02-05T08-27-19-634Z"
     es6-promise "3.0.2"
     fetch-cookie "0.4.0"
     invariant "2.2.2"
