@@ -91,11 +91,11 @@ export function Table(props: IColumnChartProps): JSX.Element {
 
     const buckets: VisualizationObject.IBucket[] = [
         {
-            localIdentifier: 'measures',
+            localIdentifier: 'columns',
             items: props.columns || []
         },
         {
-            localIdentifier: 'attributes',
+            localIdentifier: 'rows',
             items: props.rows || []
         }
     ];
