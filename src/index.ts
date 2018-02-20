@@ -3,7 +3,6 @@ import * as VisEvents from './interfaces/Events';
 import CatalogHelper from './helpers/CatalogHelper';
 import { isEmptyResult } from './helpers/errorHandlers';
 import { BaseChart, ILegendConfig } from './components/core/base/BaseChart';
-import { Table } from './components/core/Table';
 import { Kpi } from './components/simple/Kpi';
 import { Visualization, VisualizationEnvironment } from './components/uri/Visualization';
 import { ErrorStates, ErrorCodes } from './constants/errorStates';
@@ -20,9 +19,9 @@ import * as PoPHelper from './helpers/popHelper';
 
 // Final interface PoC
 import { ColumnChart } from './components/ColumnChart';
+import { Table } from './components/Table';
 
 const CoreComponents = {
-    Table,
     BaseChart
 };
 
@@ -33,7 +32,10 @@ export {
     BucketNames,
     CoreComponents,
     CatalogHelper,
+
     ColumnChart,
+    Table,
+
     ChartType,
     ErrorCodes,
     ErrorStates,
