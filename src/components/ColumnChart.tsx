@@ -11,6 +11,7 @@ export interface IColumnChartProps {
     projectId: string;
     measures: VisualizationObject.BucketItem[];
     attributes?: VisualizationObject.IVisualizationAttribute[];
+    stacks?: VisualizationObject.IVisualizationAttribute[];
     filters?: VisualizationObject.VisualizationObjectFilter[];
 }
 
@@ -86,17 +87,50 @@ function generateDefaultDimensions(afm: AFM.IAfm): AFM.IDimension[] {
     ];
 }
 
+function generateStackedDimensions(afm: AFM.IAfm): AFM.IDimension[] {
+    return [
+        {
+            itemIdentifiers: ['measureGroup', afm.attributes[0].localIdentifier]
+        },
+        {
+            itemIdentifiers: (afm.attributes || []).map((a => a.localIdentifier))
+        }
+    ];
+}
+
+function isStackedChart(buckets: VisualizationObject.IBucket[]): boolean {
+    return buckets.some((bucket) => {
+        return bucket.localIdentifier === 'stacks' && bucket.items.length > 0;
+    });
+}
+
+function getStackingResultSpec(buckets: VisualizationObject.IBucket[]): AFM.IResultSpec {
+    if (isStackedChart(buckets)) {
+        return {
+            dimensions: generateStackedDimensions(convertBucketsToAFM(buckets))
+        };
+    }
+
+    return {
+        dimensions: generateDefaultDimensions(convertBucketsToAFM(buckets))
+    };
+}
+
 export function ColumnChart(props: IColumnChartProps): JSX.Element {
     const Component = dataSourceProvider(CoreColumnChart, generateDefaultDimensions);
 
     const buckets: VisualizationObject.IBucket[] = [
         {
             localIdentifier: 'measures',
-            items: props.measures
+            items: props.measures || []
         },
         {
             localIdentifier: 'attributes',
-            items: props.attributes
+            items: props.attributes || []
+        },
+        {
+            localIdentifier: 'stacks',
+            items: props.stacks || []
         }
     ];
 
@@ -104,6 +138,7 @@ export function ColumnChart(props: IColumnChartProps): JSX.Element {
         <Component
             projectId={props.projectId}
             afm={convertBucketsToAFM(buckets)}
+            resultSpec={getStackingResultSpec(buckets)}
         />
     );
 }
