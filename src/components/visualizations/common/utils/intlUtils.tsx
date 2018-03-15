@@ -9,8 +9,16 @@ export function createIntlMock() {
     return intl;
 }
 
-export function withIntl(WrappedComponent: React.ComponentClass): React.ComponentClass {
-    return class extends React.Component {
+export function wrapWithIntl(children: any) {
+    return (
+        <IntlProvider locale={DEFAULT_LOCALE} messages={messagesMap[DEFAULT_LOCALE]}>
+            {React.cloneElement(children)}
+        </IntlProvider>
+    );
+}
+
+export function withIntl<P>(WrappedComponent: React.ComponentClass<P>): React.ComponentClass<P> {
+    return class extends React.Component<P> {
         public render() {
             return (
                 <IntlProvider locale={DEFAULT_LOCALE} messages={messagesMap[DEFAULT_LOCALE]}>

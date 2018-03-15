@@ -16,7 +16,8 @@ import {
     getDrillableSeries,
     customEscape,
     generateTooltipFn,
-    getChartOptions
+    getChartOptions,
+    IPoint
 } from '../chartOptionsBuilder';
 import { DEFAULT_CATEGORIES_LIMIT } from '../highcharts/commonConfiguration';
 
@@ -31,6 +32,8 @@ import {
 import {
     DEFAULT_COLOR_PALETTE
 } from '../../utils/color';
+
+export { IPoint };
 
 export function generateChartOptions(
     dataSet: any = fixtures.barChartWithStackByAndViewByAttributes,

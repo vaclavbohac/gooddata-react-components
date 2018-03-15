@@ -2,7 +2,7 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 
 import { BaseVisualization } from '../BaseVisualization';
-import { delay } from '../../../tests/utils';
+import { testUtils } from '@gooddata/js-utils';
 import {
     ICommonVisualizationProps,
     ILoadingInjectedProps,
@@ -52,7 +52,7 @@ describe('Base visualization child', () => {
             execution: oneMeasureResponse
         });
 
-        return delay().then(() => {
+        return testUtils.delay().then(() => {
             const visInnerComponent = wrapper.find(TestVizInnerComponent);
             expect(visInnerComponent.length).toBe(1);
         });
@@ -63,7 +63,7 @@ describe('Base visualization child', () => {
             isLoading: true
         });
 
-        return delay().then(() => {
+        return testUtils.delay().then(() => {
             const loadingComponent = wrapper.find('LoadingComponent');
             expect(loadingComponent.length).toBe(1);
         });
@@ -75,7 +75,7 @@ describe('Base visualization child', () => {
             LoadingComponent
         });
 
-        return delay().then(() => {
+        return testUtils.delay().then(() => {
             const loadingComponent = wrapper.find('LoadingComponent');
             expect(loadingComponent.length).toBe(1);
         });
@@ -86,7 +86,7 @@ describe('Base visualization child', () => {
             error: ErrorStates.DATA_TOO_LARGE_TO_COMPUTE
         });
 
-        return delay().then(() => {
+        return testUtils.delay().then(() => {
             const errorComponent = wrapper.find('ErrorComponent');
             expect(errorComponent.length).toBe(1);
         });
@@ -98,7 +98,7 @@ describe('Base visualization child', () => {
             ErrorComponent
         });
 
-        return delay().then(() => {
+        return testUtils.delay().then(() => {
             const innerWrapped = wrapper.find(TestVizInnerComponent);
             expect(innerWrapped.length).toBe(0);
 
@@ -115,7 +115,7 @@ describe('Base visualization child', () => {
             isLoading: true
         });
 
-        return delay().then(() => {
+        return testUtils.delay().then(() => {
             const loadingComponent = wrapper.find(LoadingComponent);
             expect(loadingComponent.length).toBe(1);
         });

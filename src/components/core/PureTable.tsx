@@ -43,7 +43,7 @@ export interface ITableProps extends ICommonVisualizationProps {
 
 export interface ITableState {
     page: number;
-    lastAddedTotalType: string;
+    lastAddedTotalType: string; // TODO create TotalType type
 }
 
 const ROWS_PER_PAGE_IN_RESPONSIVE_TABLE = 9;

@@ -64,9 +64,9 @@
     react-measure "1.4.7"
     rxjs "5.4.3"
 
-"@gooddata/js-utils@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@gooddata/js-utils/-/js-utils-2.0.0.tgz#357d795cf5c7a7b58ecb14bd04189338a428559c"
+"@gooddata/js-utils@^2.0.0", "@gooddata/js-utils@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@gooddata/js-utils/-/js-utils-2.0.1.tgz#46290cba9cb1e5f1c5e97e6860b5b1ef943ee779"
   dependencies:
     js-cookie "^2.1.4"
     lodash "^4.17.4"
@@ -356,6 +356,12 @@
     "@types/cheerio" "*"
     "@types/react" "*"
 
+"@types/fixed-data-table-2@0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@types/fixed-data-table-2/-/fixed-data-table-2-0.8.1.tgz#620cd659593eead4b3a9de39a258270de3f132fa"
+  dependencies:
+    "@types/react" "*"
+
 "@types/geojson@*":
   version "7946.0.2"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.2.tgz#0bd0a01ef04e813c2b7580318da9e37c2eadea9c"
@@ -412,6 +418,12 @@
 "@types/react-measure@0.4.7":
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/@types/react-measure/-/react-measure-0.4.7.tgz#f4dd9f6265b488032a31677af5e5eadee67ac8ce"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-portal@3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@types/react-portal/-/react-portal-3.0.4.tgz#9756d3cc96e7d9834cf94584957dacf5cc55673b"
   dependencies:
     "@types/react" "*"
 
@@ -6598,7 +6610,7 @@ node-sass@4.7.2:
     stdout-stream "^1.4.0"
     "true-case-path" "^1.0.2"
 
-nodelist-foreach-polyfill@1.2.0:
+nodelist-foreach-polyfill@1.2.0, nodelist-foreach-polyfill@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/nodelist-foreach-polyfill/-/nodelist-foreach-polyfill-1.2.0.tgz#92bca739959af68271734087e48474c2fef5152c"
 
