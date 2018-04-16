@@ -3,14 +3,15 @@ import isEqual = require('lodash/isEqual');
 import noop = require('lodash/noop');
 import * as React from 'react';
 import { initChartPlugins } from './highcharts/chartPlugins';
+import * as Highcharts from 'highcharts';
 
-// Have only one entrypoint to highcharts and drill module
-// tslint:disable-next-line
-export const Highcharts = require('highcharts/highcharts');
 // tslint:disable-next-line
 const drillmodule = require('highcharts/modules/drilldown');
+
 drillmodule(Highcharts);
 initChartPlugins(Highcharts);
+
+export { Highcharts };
 
 export interface ILegendConfig {
     enabled?: boolean;

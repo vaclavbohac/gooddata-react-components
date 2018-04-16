@@ -33,7 +33,8 @@ function generateDefaultDimensions(afm: AFM.IAfm): AFM.IDimension[] {
             itemIdentifiers: ['measureGroup']
         },
         {
-            itemIdentifiers: get(afm, 'attributes', []).map(a => a.localIdentifier)
+            itemIdentifiers: get<AFM.IAfm, 'attributes', AFM.IAttribute[]>(afm, 'attributes', [])
+                .map(a => a.localIdentifier)
         }
     ];
 }
@@ -71,7 +72,7 @@ export function AreaChart(props: IAreaChartProps): JSX.Element {
     ];
 
     const newProps
-        = omit<IAreaChartProps, IAreaChartNonBucketProps>(props, ['measures', 'viewBy', 'stackBy', 'filters']);
+        = omit<IAreaChartNonBucketProps>(props, ['measures', 'viewBy', 'stackBy', 'filters']);
 
     return (
         <AfmAreaChart

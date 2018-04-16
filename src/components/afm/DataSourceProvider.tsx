@@ -131,7 +131,7 @@ export function dataSourceProvider<T>(
                 return null;
             }
 
-            const props = omit<any, IDataSourceProviderProps>(
+            const props = omit<any>(
                 this.props,
                 ['afm', 'projectId', 'resultSpec', 'adapterFactory']
             );

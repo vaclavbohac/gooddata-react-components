@@ -66,7 +66,7 @@ export function ColumnChart(props: IColumnChartProps): JSX.Element {
     ];
 
     const newProps
-        = omit<IColumnChartProps, IColumnChartNonBucketProps>(props, ['measures', 'viewBy', 'stackBy', 'filters']);
+        = omit<IColumnChartNonBucketProps>(props, ['measures', 'viewBy', 'stackBy', 'filters']);
 
     return (
         <AfmColumnChart

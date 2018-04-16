@@ -70,7 +70,7 @@ export function LineChart(props: ILineChartProps): JSX.Element {
     ];
 
     const newProps
-        = omit<ILineChartProps, ILineChartNonBucketProps>(props, ['measures', 'trendBy', 'segmentBy', 'filters']);
+        = omit<ILineChartNonBucketProps>(props, ['measures', 'trendBy', 'segmentBy', 'filters']);
 
     return (
         <AfmLineChart

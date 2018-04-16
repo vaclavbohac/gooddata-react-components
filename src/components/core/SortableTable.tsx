@@ -41,7 +41,7 @@ export class SortableTable
     }
 
     public handlePushData(pushedData: IPushData): void {
-        const sortItems = get<IPushData, AFM.SortItem[]>(pushedData, 'properties.sortItems');
+        const sortItems = get<IPushData, any>(pushedData, 'properties.sortItems');
 
         if (sortItems) {
             // TODO save sortItems together with some resultSpec fingerprint

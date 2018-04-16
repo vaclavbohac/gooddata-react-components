@@ -41,7 +41,7 @@ export function Table(props: ITableProps): JSX.Element {
     ];
 
     const newProps
-        = omit<ITableProps, ITableNonBucketProps>(props, ['measures', 'attributes', 'totals', 'filters']);
+        = omit<ITableNonBucketProps>(props, ['measures', 'attributes', 'totals', 'filters']);
 
     return (
         <AfmTable

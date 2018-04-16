@@ -5,7 +5,7 @@ import * as invariant from 'invariant';
 import * as CustomEvent from 'custom-event';
 import { IDrillableItem, IDrillEventIntersectionElement } from '../../../../interfaces/DrillEvents';
 import { AFM, Execution } from '@gooddata/typings';
-import * as Highcharts from '@types/highcharts';
+import { PointObject, ChartDrilldownEvent } from 'highcharts';
 import { VisElementType, VisType, VisualizationTypes } from '../../../../constants/visualizationTypes';
 
 export interface IDrillableItemLocalId extends IDrillableItem {
@@ -25,11 +25,11 @@ export interface IDrillIntersection {
     identifier: AFM.Identifier;
 }
 
-export interface IHighchartsPointObject extends Highcharts.PointObject {
+export interface IHighchartsPointObject extends PointObject {
     drillContext: IDrillIntersection[];
 }
 
-export interface IHighchartsChartDrilldownEvent extends Highcharts.ChartDrilldownEvent {
+export interface IHighchartsChartDrilldownEvent extends ChartDrilldownEvent {
     point?: IHighchartsPointObject;
     points?: IHighchartsPointObject[];
 }

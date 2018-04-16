@@ -31,7 +31,7 @@ export function Headline(props: IHeadlineProps): JSX.Element {
         }
     ];
 
-    const newProps = omit<IHeadlineProps, IHeadlineNonBucketProps>(props, ['measure', 'filters']);
+    const newProps = omit<IHeadlineNonBucketProps>(props, ['measure', 'filters']);
 
     return (
         <AfmHeadline

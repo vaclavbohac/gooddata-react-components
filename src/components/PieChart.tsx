@@ -36,7 +36,7 @@ export function PieChart(props: IPieChartProps): JSX.Element {
     ];
 
     const newProps
-        = omit<IPieChartProps, IPieChartNonBucketProps>(props, ['measures', 'viewBy', 'filters']);
+        = omit<IPieChartNonBucketProps>(props, ['measures', 'viewBy', 'filters']);
 
     return (
         <AfmPieChart

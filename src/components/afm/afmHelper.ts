@@ -8,7 +8,8 @@ export const generateDefaultDimensions = function generateDefaultDimensions(afm:
             itemIdentifiers: ['measureGroup']
         },
         {
-            itemIdentifiers: get(afm, 'attributes', []).map(a => a.localIdentifier)
+            itemIdentifiers: get<AFM.IAfm, 'attributes', AFM.IAttribute[]>(afm, 'attributes', [])
+                .map(a => a.localIdentifier)
         }
     ];
 };

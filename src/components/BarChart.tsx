@@ -66,7 +66,7 @@ export function BarChart(props: IBarChartProps): JSX.Element {
     ];
 
     const newProps
-        = omit<IBarChartBucketProps, IBarChartNonBucketProps>(props, ['measures', 'viewBy', 'stackBy', 'filters']);
+        = omit<IBarChartNonBucketProps>(props, ['measures', 'viewBy', 'stackBy', 'filters']);
 
     return (
         <AfmBarChart

@@ -59,14 +59,17 @@ export interface IAttributeMetadata {
 export interface IAttributeDropdownProps {
     attributeDisplayForm: IAttributeDisplayForm;
     projectId: string;
+    isUsingIdentifier: boolean;
+
     onApply: Function;
     fullscreenOnMobile?: boolean;
-    isUsingIdentifier: boolean;
-    metadata: IAttributeMetadata;
+
     getListItem?: Function;
     getListLoading?: Function;
     getListError?: Function;
     getListNoResults?: Function;
+
+    metadata: IAttributeMetadata;
 }
 
 export interface IAttributeDropdownStateItem {
